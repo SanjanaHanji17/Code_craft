@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Team Question Portal</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f7fb;--card:#fff;--text:#1b1e2b;--muted:#5b6074;--accent:#4f46e5;--border:#e1e4ee;--code:#eef0f8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12141c;--card:#1b1e2b;--text:#eceef6;--muted:#9aa0b8;--accent:#8b86ff;--border:#2b3042;--code:#252a3b}}
+:root[data-theme="dark"]{--bg:#12141c;--card:#1b1e2b;--text:#eceef6;--muted:#9aa0b8;--accent:#8b86ff;--border:#2b3042;--code:#252a3b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55}
+main{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.5rem;margin:8px 0 4px}
+p.sub{color:var(--muted);margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+label{font-weight:600;display:block;margin-bottom:8px}
+.row{display:flex;gap:8px}
+input{flex:1;min-width:0;font-size:1.1rem;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text)}
+button{font-size:1rem;font-weight:600;padding:12px 20px;border:0;border-radius:10px;background:var(--accent);color:#fff;cursor:pointer}
+.err{color:#d93a3a;margin:10px 0 0;min-height:1.2em}
+.badge{display:inline-block;background:var(--code);color:var(--accent);font-weight:600;font-size:.85rem;padding:4px 10px;border-radius:999px;margin-bottom:8px}
+h2{font-size:1.35rem;margin:0 0 10px}
+h3{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin:18px 0 6px}
+pre{background:var(--code);padding:12px;border-radius:10px;overflow-x:auto;margin:0;font-size:.92rem;white-space:pre-wrap}
+ul{margin:0;padding-left:20px}
+code{background:var(--code);padding:1px 5px;border-radius:5px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<main>
+<h1>Team Question Portal</h1>
+<p class="sub">Enter your team number to see your question.</p>
+<div class="card">
+<label for="team">Team number</label>
+<div class="row"><input id="team" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 12"><button id="go">Show</button></div>
+<p class="err" id="err"></p>
+</div>
+<div id="out" class="card hidden"></div>
+</main>
+<script>
+const Q=[
+{n:"Merge Sorted Array",p:"You are given two integer arrays <code>nums1</code> and <code>nums2</code>, both sorted in non-decreasing order, and two integers <code>m</code> and <code>n</code> giving the number of valid elements in each. Merge <code>nums2</code> into <code>nums1</code> so that <code>nums1</code> becomes one sorted array. <code>nums1</code> has length <code>m + n</code>; its last <code>n</code> slots are 0 and are reserved for the merge. Do it in place (return nothing).",io:"Input: nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3\nOutput: [1,2,2,3,5,6]",ex:"Merging [1,2,3] and [2,5,6] gives [1,2,2,3,5,6], stored inside nums1.",c:["nums1.length == m + n","nums2.length == n","0 <= m, n <= 200","1 <= m + n <= 200","-10^9 <= nums1[i], nums2[j] <= 10^9"]},
+{n:"Fizz Buzz",p:"Given an integer <code>n</code>, return a string array <code>answer</code> (1-indexed) where: <code>answer[i]</code> is \"FizzBuzz\" if i is divisible by 3 and 5; \"Fizz\" if divisible by 3; \"Buzz\" if divisible by 5; otherwise the number i as a string.",io:"Input: n = 5\nOutput: [\"1\",\"2\",\"Fizz\",\"4\",\"Buzz\"]\n\nInput: n = 15\nOutput: [\"1\",\"2\",\"Fizz\",\"4\",\"Buzz\",\"Fizz\",\"7\",\"8\",\"Fizz\",\"Buzz\",\"11\",\"Fizz\",\"13\",\"14\",\"FizzBuzz\"]",ex:"3 is divisible by 3 so it becomes \"Fizz\", 5 becomes \"Buzz\", and 15 is divisible by both so it becomes \"FizzBuzz\".",c:["1 <= n <= 10^4"]},
+{n:"Matrix Diagonal Sum",p:"Given a square matrix <code>mat</code>, return the sum of the matrix diagonals. Include every element on the primary diagonal and every element on the secondary diagonal that is not part of the primary diagonal (the centre element must be counted only once).",io:"Input: mat = [[1,2,3],[4,5,6],[7,8,9]]\nOutput: 25",ex:"Primary diagonal: 1 + 5 + 9. Secondary diagonal excluding the shared centre: 3 + 7. Total = 25.",c:["n == mat.length == mat[i].length","1 <= n <= 100","1 <= mat[i][j] <= 100"]},
+{n:"Left and Right Sum Differences",p:"Given a 0-indexed integer array <code>nums</code>, find a 0-indexed array <code>answer</code> of the same length where <code>answer[i] = |leftSum[i] - rightSum[i]|</code>. <code>leftSum[i]</code> is the sum of elements to the left of index i (0 if none); <code>rightSum[i]</code> is the sum of elements to the right of index i (0 if none).",io:"Input: nums = [10,4,8,3]\nOutput: [15,1,11,22]",ex:"leftSum = [0,10,14,22], rightSum = [15,11,3,0]. The absolute differences are [15,1,11,22].",c:["1 <= nums.length <= 1000","1 <= nums[i] <= 10^5"]},
+{n:"Find the Highest Altitude",p:"A biker starts at altitude 0 and rides through n + 1 points. You are given an integer array <code>gain</code> of length n, where <code>gain[i]</code> is the net altitude change between point i and point i + 1. Return the highest altitude reached.",io:"Input: gain = [-5,1,5,0,-7]\nOutput: 1",ex:"Altitudes are [0,-5,-4,1,1,-6]. The highest is 1.",c:["n == gain.length","1 <= n <= 100","-100 <= gain[i] <= 100"]},
+{n:"Median of Two Sorted Arrays",p:"Given two sorted arrays <code>nums1</code> and <code>nums2</code> of sizes m and n, return the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).",io:"Input: nums1 = [1,3], nums2 = [2]\nOutput: 2.00000\n\nInput: nums1 = [1,2], nums2 = [3,4]\nOutput: 2.50000",ex:"Merged array [1,2,3] has median 2. Merged array [1,2,3,4] has median (2 + 3) / 2 = 2.5.",c:["nums1.length == m","nums2.length == n","0 <= m <= 1000","0 <= n <= 1000","1 <= m + n <= 2000","-10^6 <= nums1[i], nums2[i] <= 10^6"]},
+{n:"Rotate Array",p:"Given an integer array <code>nums</code>, rotate the array to the right by <code>k</code> steps, where k is non-negative. Try to solve it in place with O(1) extra space.",io:"Input: nums = [1,2,3,4,5,6,7], k = 3\nOutput: [5,6,7,1,2,3,4]",ex:"Rotate 1 step: [7,1,2,3,4,5,6]. Rotate 2 steps: [6,7,1,2,3,4,5]. Rotate 3 steps: [5,6,7,1,2,3,4].",c:["1 <= nums.length <= 10^5","-2^31 <= nums[i] <= 2^31 - 1","0 <= k <= 10^5"]},
+{n:"Remove Element",p:"Given an integer array <code>nums</code> and an integer <code>val</code>, remove all occurrences of <code>val</code> in nums in place. The order of the remaining elements may change. Return <code>k</code>, the number of elements not equal to val, and make the first k elements of nums hold those elements.",io:"Input: nums = [3,2,2,3], val = 3\nOutput: 2, nums = [2,2,_,_]",ex:"The function returns k = 2, and the first two elements of nums are 2 and 2. What lies beyond the first k elements does not matter.",c:["0 <= nums.length <= 100","0 <= nums[i] <= 50","0 <= val <= 100"]}
+];
+const $=id=>document.getElementById(id);
+function show(){
+  const t=Number($("team").value.trim());
+  const out=$("out");$("err").textContent="";
+  if(!Number.isInteger(t)||t<1){out.classList.add("hidden");$("err").textContent="Please enter a valid team number (1 or more).";return;}
+  const i=(t-1)%8,q=Q[i];
+  out.innerHTML='<span class="badge">Team '+t+' · Question '+(i+1)+'</span><h2>'+q.n+'</h2>'+
+  '<h3>Problem Statement</h3><div>'+q.p+'</div>'+
+  '<h3>Input / Output</h3><pre>'+q.io.replace(/</g,"&lt;")+'</pre>'+
+  '<h3>Explanation</h3><div>'+q.ex+'</div>'+
+  '<h3>Constraints</h3><ul>'+q.c.map(x=>'<li><code>'+x.replace(/</g,"&lt;")+'</code></li>').join("")+'</ul>';
+  out.classList.remove("hidden");
+}
+$("go").onclick=show;
+$("team").addEventListener("keydown",e=>{if(e.key==="Enter")show();});
+</script>
+</body>
+</html>
